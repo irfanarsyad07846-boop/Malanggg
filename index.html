@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jelajah Kota Malang - Slide Presentation & Interactive Quiz 🍎🏔️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Casual', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #e1f5fe;
+            background-image: radial-gradient(#0288d1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #01579b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            width: 100%;
+            max-width: 800px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            background: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 20px;
+            padding: 30px 24px;
+            box-shadow: 8px 8px 0px #000000;
+            animation: fadeIn 0.3s ease-in-out;
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HEADER BOX */
+        .header-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0288d1;
+            color: #ffffff;
+            padding: 12px 20px;
+            border: 3px solid #000000;
+            border-radius: 14px;
+            box-shadow: 4px 4px 0px #000000;
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px #000000;
+        }
+
+        .arema-badge {
+            background: #ffeb3b;
+            color: #000000;
+            padding: 4px 10px;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 0.8rem;
+            box-shadow: 2px 2px 0px #000000;
+            transform: rotate(-2deg);
+        }
+
+        .slide-badge {
+            background: #ff9800;
+            color: #ffffff;
+            display: inline-block;
+            padding: 6px 14px;
+            border: 3px solid #000000;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 0.85rem;
+            box-shadow: 3px 3px 0px #000000;
+            margin-bottom: 16px;
+        }
+
+        .slide-body {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #01579b;
+        }
+
+        /* GRID CARDS */
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .card-item {
+            background: #e0f7fa;
+            border: 3px solid #000000;
+            border-radius: 14px;
+            padding: 15px;
+            box-shadow: 4px 4px 0px #000000;
+        }
+
+        .card-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: #0288d1;
+        }
+
+        /* QUIZ YES/NO BUTTONS */
+        .quiz-container {
+            background: #fff8e1;
+            border: 3px dashed #ff9800;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 18px;
+        }
+
+        .btn-group-yn {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .btn-yn {
+            flex: 1;
+            max-width: 180px;
+            padding: 14px;
+            border: 3px solid #000000;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #000000;
+            transition: all 0.1s;
+        }
+
+        .btn-yes {
+            background: #4caf50;
+            color: #ffffff;
+        }
+
+        .btn-no {
+            background: #f44336;
+            color: #ffffff;
+        }
+
+        .btn-yn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000000;
+        }
+
+        .feedback-msg {
+            font-weight: 900;
+            font-size: 1.1rem;
+            min-height: 30px;
+        }
+
+        /* NAVIGATION BAR */
+        .nav-controls {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+            background: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 16px;
+            padding: 10px 18px;
+            box-shadow: 6px 6px 0px #000000;
+        }
+
+        .nav-btn {
+            background: #ffeb3b;
+            color: #000000;
+            border: 3px solid #000000;
+            border-radius: 10px;
+            padding: 8px 18px;
+            font-weight: 900;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px #000000;
+            user-select: none;
+        }
+
+        .nav-btn:disabled {
+            background: #e0e0e0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .nav-btn:not(:disabled):active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #000000;
+        }
+
+        .slide-indicator {
+            font-weight: 900;
+            font-size: 1rem;
+            color: #0288d1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="presentation-container">
+
+        <!-- SLIDE 1: INTRO MALANG -->
+        <div class="slide active" id="slide-0">
+            <div class="header-box">
+                <span class="header-title">🏔️ KOTA MALANG</span>
+                <span class="arema-badge">SINGO EDAN 🦁</span>
+            </div>
+            <span class="slide-badge">SLIDE 1 / 8 • INTRODUKSI</span>
+            <div class="slide-body" style="text-align: center;">
+                <p style="font-size: 1.3rem; font-weight: bold; margin-bottom: 12px; color: #000000;">Sugeng Rawuh ing Malang! 🍎</p>
+                <p>Kota Malang terkenal dengan udaranya yang sejuk, keindahan alam pegunungan, kuliner lezat yang ramah kantong, serta keramahan warganya (*Ojob & Sam*). Kota pendidikan dan pariwisata terfavorit di Jawa Timur!</p>
+                <div style="margin-top: 20px; background: #fff8e1; border: 3px dashed #ff9800; padding: 12px; border-radius: 12px; font-weight: bold; color: #000000;">
+                    👉 Tekan tombol "Lanjut ❯" atau panah kanan keyboard untuk menjelajah slide & kuis!
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Boso Walikan Malang -->
+        <div class="slide" id="slide-1">
+            <div class="header-box">
+                <span class="header-title">🗣️ BOSO WALIKAN</span>
+                <span class="arema-badge">UNIQUE CULTURE</span>
+            </div>
+            <span class="slide-badge" style="background: #9c27b0;">SLIDE 2 / 8 • BUDAYA UNIK</span>
+            <div class="slide-body">
+                <p style="font-weight: bold; margin-bottom: 10px; color: #000000;">Ciri khas terunik Kota Malang adalah bahasa terbalik (Boso Walikan):</p>
+                <div class="grid-cards">
+                    <div class="card-item">
+                        <h4>🦁 AREMA</h4>
+                        <p style="font-size: 0.95rem; color: #000000;">Berasal dari kata <strong>AREK MALANG</strong> (Kebanggaan warga Malang).</p>
+                    </div>
+                    <div class="card-item">
+                        <h4>👦 SAM & OJOB</h4>
+                        <p style="font-size: 0.95rem; color: #000000;"><strong>SAM</strong> = Mas (Kakak/Pria).<br><strong>OJOB</strong> = Bojo (Pasangan).</p>
+                    </div>
+                    <div class="card-item">
+                        <h4>☕ KOPAY & NALAT</h4>
+                        <p style="font-size: 0.95rem; color: #000000;"><strong>KOPAY</strong> = Kopi.<br><strong>NALAT</strong> = Talan/Jalan-jalan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: KULINER LEGENDARIS -->
+        <div class="slide" id="slide-2">
+            <div class="header-box">
+                <span class="header-title">🍜 KULINER KHAS</span>
+                <span class="arema-badge">LEZAT & GURIH</span>
+            </div>
+            <span class="slide-badge" style="background: #e91e63;">SLIDE 3 / 8 • SURGA KULINER</span>
+            <div class="slide-body">
+                <p style="font-weight: bold; margin-bottom: 10px; color: #000000;">Jajanan Khas Malang yang Wajib Dicoba:</p>
+                <div class="grid-cards">
+                    <div class="card-item">
+                        <h4>🥣 Bakso Malang</h4>
+                        <p style="font-size: 0.95rem; color: #000000;">Lengkap pakai pangsit goreng renyah, bakso bakar, dan tahu isi!</p>
+                    </div>
+                    <div class="card-item">
+                        <h4>🍲 Cwie Mie Malang</h4>
+                        <p style="font-size: 0.95rem; color: #000000;">Mie tipis gurih disajikan dengan taburan ayam cincang halus dan mangkuk pangsit.</p>
+                    </div>
+                    <div class="card-item">
+                        <h4>🍎 Keripik Apel & Orem-Orem</h4>
+                        <p style="font-size: 0.95rem; color: #000000;">Oleh-oleh buah apel segar & olahan tempe dengan kuah santan kuning pedas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: DESTINASI WISATA -->
+        <div class="slide" id="slide-3">
+            <div class="header-box">
+                <span class="header-title">🌈 WISATA POPULER</span>
+                <span class="arema-badge">ESTETIK & ADEM</span>
+            </div>
+            <span class="slide-badge" style="background: #4caf50;">SLIDE 4 / 8 • DESTINASI</span>
+            <div class="slide-body">
+                <p style="font-weight: bold; margin-bottom: 10px; color: #000000;">Spot Liburan Favorit di Malang & Batu:</p>
+                <div class="grid-cards">
+                    <div class="card-item">
+                        <h4>🏘️ Kampung Warna-Warni Jodipan</h4>
+                        <p style="font-size: 0.95rem; color: #000000;">Pemukiman ikonik penuh cat warna-warni dan jembatan kaca.</p>
+                    </div>
+                    <div class="card-item">
+                        <h4>🎢 Jawa Timur Park (JTP 1, 2, 3)</h4>
+                        <p style="font-size: 0.95rem; color: #000000;">Taman belajar & bermain modern terbesar di Kota Batu Malang.</p>
+                    </div>
+                    <div class="card-item">
+                        <h4>🌋 Gunung Bromo</h4>
+                        <p style="font-size: 0.95rem; color: #000000;">Akses utama menikmati sunrise indah dan lautan pasir alami.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: QUIZ INTERAKTIF 1 -->
+        <div class="slide" id="slide-4">
+            <div class="header-box">
+                <span class="header-title">❓ QUIZ MALANG #1</span>
+                <span class="arema-badge">MAU ATAU TIDAK</span>
+            </div>
+            <span class="slide-badge">SLIDE 5 / 8 • KUIS BAKSO</span>
+            <div class="quiz-container">
+                <div class="question-text">
+                    Apakah kamu MAU makan Bakso Malang komplet pakai Pangsit Goreng Renyah & Bakso Bakar bumbu kecap malam ini? 🍲
+                </div>
+                <div class="btn-group-yn">
+                    <button class="btn-yn btn-yes" onclick="answerQuiz(0, true)">MAU BANGAT! 🤤</button>
+                    <button class="btn-yn btn-no" onclick="answerQuiz(0, false)">TIDAK MAU 😅</button>
+                </div>
+                <div class="feedback-msg" id="feedback-0"></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: QUIZ INTERAKTIF 2 -->
+        <div class="slide" id="slide-5">
+            <div class="header-box">
+                <span class="header-title">❓ QUIZ MALANG #2</span>
+                <span class="arema-badge">MAU ATAU TIDAK</span>
+            </div>
+            <span class="slide-badge" style="background: #9c27b0;">SLIDE 6 / 8 • KUIS WISATA</span>
+            <div class="quiz-container">
+                <div class="question-text">
+                    Apakah kamu MAU jalan-jalan sore sambil foto-foto di Kampung Warna-Warni Jodipan Malang? 🌈
+                </div>
+                <div class="btn-group-yn">
+                    <button class="btn-yn btn-yes" onclick="answerQuiz(1, true)">MAU DONG! 📸</button>
+                    <button class="btn-yn btn-no" onclick="answerQuiz(1, false)">TIDAK DULU 🚶</button>
+                </div>
+                <div class="feedback-msg" id="feedback-1"></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: QUIZ INTERAKTIF 3 -->
+        <div class="slide" id="slide-6">
+            <div class="header-box">
+                <span class="header-title">❓ QUIZ MALANG #3</span>
+                <span class="arema-badge">MAU ATAU TIDAK</span>
+            </div>
+            <span class="slide-badge" style="background: #e91e63;">SLIDE 7 / 8 • KUIS BAHASA</span>
+            <div class="quiz-container">
+                <div class="question-text">
+                    Apakah kata "SAM" dalam Boso Walikan Malang artinya sama dengan kata "MAS"? 🤔
+                </div>
+                <div class="btn-group-yn">
+                    <button class="btn-yn btn-yes" onclick="answerQuiz(2, true)">MAU (BENAR) ✅</button>
+                    <button class="btn-yn btn-no" onclick="answerQuiz(2, false)">TIDAK (SALAH) ❌</button>
+                </div>
+                <div class="feedback-msg" id="feedback-2"></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: PENUTUP -->
+        <div class="slide" id="slide-7">
+            <div class="header-box">
+                <span class="header-title">🍎 MATUR NUWUN</span>
+                <span class="arema-badge">SALAM SATOE JWA</span>
+            </div>
+            <span class="slide-badge" style="background: #4caf50;">SLIDE 8 / 8 • CLOSING</span>
+            <div class="slide-body" style="text-align: center;">
+                <p style="font-size: 1.3rem; font-weight: bold; margin-bottom: 12px; color: #000000;">Kapan Nih Main ke Malang? 🧳</p>
+                <p>Malang selalu terbuka hangat buat kamu yang butuh liburan sejuk, kulineran enak, dan suasana kota yang ngangenin!</p>
+                <div style="margin-top: 20px; font-weight: 900; font-size: 1.2rem; color: #0288d1;">
+                    SALAM SATOE DSIWA! 🦁⚽
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- NAVIGATION CONTROLS -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" onclick="moveSlide(-1)" disabled>❮ Kembali</button>
+        <div class="slide-indicator" id="slideIndicator">1 / 8</div>
+        <button class="nav-btn" id="nextBtn" onclick="moveSlide(1)">Lanjut ❯</button>
+    </div>
+
+    <script>
+        var currentSlide = 0;
+        var totalSlides = 8;
+
+        function updateSlide() {
+            for (var i = 0; i < totalSlides; i++) {
+                var slideEl = document.getElementById('slide-' + i);
+                if (i === currentSlide) {
+                    slideEl.classList.add('active');
+                } else {
+                    slideEl.classList.remove('active');
+                }
+            }
+
+            document.getElementById('slideIndicator').innerText = (currentSlide + 1) + ' / ' + totalSlides;
+            document.getElementById('prevBtn').disabled = (currentSlide === 0);
+            document.getElementById('nextBtn').disabled = (currentSlide === totalSlides - 1);
+        }
+
+        function moveSlide(dir) {
+            var target = currentSlide + dir;
+            if (target >= 0 && target < totalSlides) {
+                currentSlide = target;
+                updateSlide();
+            }
+        }
+
+        // NAVIGASI KEYBOARD
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') moveSlide(1);
+            if (e.key === 'ArrowLeft') moveSlide(-1);
+        });
+
+        // FUNGSI JAWAB KUIS MAU / TIDAK MAU
+        function answerQuiz(quizIdx, isYes) {
+            var fb = document.getElementById('feedback-' + quizIdx);
+            
+            if (quizIdx === 0) { // Quiz Bakso
+                if (isYes) {
+                    fb.style.color = '#2e7d32';
+                    fb.innerText = 'Gasss! Bakso Malang dipakein kuah hangat emang paling juara! 😋';
+                } else {
+                    fb.style.color = '#d32f2f';
+                    fb.innerText = 'Rugi banget loh! Bakso Malang itu kuliner paling legendaris! 😁';
+                }
+            } else if (quizIdx === 1) { // Quiz Jodipan
+                if (isYes) {
+                    fb.style.color = '#2e7d32';
+                    fb.innerText = 'Mantap! Siapin outfit terbaikmu buat berburu foto estetik! 📸';
+                } else {
+                    fb.style.color = '#d32f2f';
+                    fb.innerText = 'Sayang banget, padahal pemandangannya unik dan warna-warni! 🌈';
+                }
+            } else if (quizIdx === 2) { // Quiz Boso Walikan
+                if (isYes) {
+                    fb.style.color = '#2e7d32';
+                    fb.innerText = '✅ PINTER PISAN! SAM dibalik jadi MAS (Kakak Pria di Malang). 💯';
+                } else {
+                    fb.style.color = '#d32f2f';
+                    fb.innerText = '❌ Salah euy! SAM itu hasil dari kata MAS yang dibalik! 😅';
+                }
+            }
+        }
+
+        window.onload = function() {
+            updateSlide();
+        };
+    </script>
+</body>
+</html>
